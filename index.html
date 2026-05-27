@@ -82,7 +82,8 @@
                 <div class="hero-content">
                     <span class="hero-badge">#1 Dealership in Ludhiana</span>
                     <h1>Discover Your Perfect Ride Today</h1>
-                    <p class="hero-line-1">Experience the thrill of the open road with our premium selection of certified pre-owned two-wheelers.</p>
+                    <p class="hero-line-1">Experience the thrill of the open road with our premium selection of
+                        certified pre-owned two-wheelers.</p>
                     <p class="hero-line-2">Unbeatable prices, transparent history, and financing available.</p>
                     <div class="hero-buttons">
                         <button class="btn btn-primary btn-large" onclick="navigateTo('buy-section')">Browse Inventory
@@ -217,49 +218,47 @@
                 <div class="header-line"></div>
                 <p>Don't just take our word for it—read reviews from our satisfied community.</p>
             </div>
-            <div class="testimonial-grid">
-                <div class="testimonial-card">
-                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                            class="fa-solid fa-star"></i></div>
-                    <p>"Sold my old Pulsar here and got an amazing price. The paperwork was handled seamlessly within
-                        hours. Highly professional staff!"</p>
-                    <div class="author">
-                        <div class="avatar">GS</div>
-                        <div class="author-info">
-                            <h4>Gurpreet Singh</h4>
-                            <span>Sold Bajaj Pulsar</span>
+            <div class="testimonial-grid" id="testimonials-grid">
+                <!-- Dynamically rendered via app.js -->
+            </div>
+
+            <!-- Write a Review Form -->
+            <div class="form-container" style="margin-top: 5rem; max-width: 800px;">
+                <div class="section-header" style="margin-bottom: 2.5rem;">
+                    <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Share Your Experience</h3>
+                    <div class="header-line" style="width: 40px; margin: 0.5rem auto 1rem auto;"></div>
+                    <p>We value your feedback. Leave a rating and review to share your experience with our community!</p>
+                </div>
+                <form id="review-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="review-name">Your Full Name <span class="required">*</span></label>
+                            <input type="text" id="review-name" required placeholder="e.g. Gurpreet Singh">
+                        </div>
+                        <div class="form-group">
+                            <label>Your Rating <span class="required">*</span></label>
+                            <div class="star-rating-selector" id="star-selector">
+                                <i class="fa-regular fa-star" data-rating="1"></i>
+                                <i class="fa-regular fa-star" data-rating="2"></i>
+                                <i class="fa-regular fa-star" data-rating="3"></i>
+                                <i class="fa-regular fa-star" data-rating="4"></i>
+                                <i class="fa-regular fa-star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" id="review-rating" value="5" required>
                         </div>
                     </div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                            class="fa-solid fa-star-half-stroke"></i></div>
-                    <p>"I bought an Activa 6G for my daily commute. It looked brand new and runs perfectly. The 6-month
-                        warranty gave me great peace of mind."</p>
-                    <div class="author">
-                        <div class="avatar">MK</div>
-                        <div class="author-info">
-                            <h4>Manpreet Kaur</h4>
-                            <span>Bought Honda Activa</span>
-                        </div>
+                    <div class="form-group">
+                        <label for="review-vehicle">Vehicle Details <span class="optional">(Optional - e.g. Bought Honda Activa)</span></label>
+                        <input type="text" id="review-vehicle" placeholder="e.g. Bought Honda Activa 6G">
                     </div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                            class="fa-solid fa-star"></i></div>
-                    <p>"The best dealership in Samrala hands down. They arranged my loan within 4 hours. Extremely
-                        transparent pricing."</p>
-                    <div class="author">
-                        <div class="avatar">RS</div>
-                        <div class="author-info">
-                            <h4>Rajeev Sharma</h4>
-                            <span>Bought Royal Enfield</span>
-                        </div>
+                    <div class="form-group">
+                        <label for="review-text">Review Description <span class="required">*</span></label>
+                        <textarea id="review-text" required placeholder="Write your experience with Samrala Auto Deals..." style="min-height: 120px; resize: vertical;"></textarea>
                     </div>
-                </div>
+                    <button type="submit" class="btn btn-primary submit-btn btn-large" style="width: 100%;">
+                        Submit Review <i class="fa-solid fa-paper-plane" style="margin-left: 5px;"></i>
+                    </button>
+                </form>
             </div>
         </section>
 
@@ -341,11 +340,13 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="seller-name">Your Full Name <span class="required">*</span></label>
-                            <input type="text" id="seller-name" name="seller_name" required placeholder="Enter your name">
+                            <input type="text" id="seller-name" name="seller_name" required
+                                placeholder="Enter your name">
                         </div>
                         <div class="form-group">
                             <label for="seller-phone">Phone Number <span class="required">*</span></label>
-                            <input type="tel" id="seller-phone" name="seller_phone" required placeholder="e.g. +91 9876543210">
+                            <input type="tel" id="seller-phone" name="seller_phone" required
+                                placeholder="e.g. +91 9876543210">
                         </div>
                     </div>
                     <div class="form-group">
@@ -369,7 +370,8 @@
                     </div>
                     <div id="sell-status-container" style="margin-top: 1.5rem;">
                         <button type="button" class="btn btn-primary submit-btn btn-large" style="width: 100%;"
-                            onclick="submitSell('email')">Submit Details & Get Valuation <i class="fa-solid fa-paper-plane"></i></button>
+                            onclick="submitSell('email')">Submit Details & Get Valuation <i
+                                class="fa-solid fa-paper-plane"></i></button>
                     </div>
                 </form>
             </div>
@@ -380,14 +382,14 @@
             <div class="section-header">
                 <h2>About Samrala Auto Deals</h2>
                 <div class="header-line"></div>
-                <p>Your trusted automotive partner since 1993.</p>
+                <p>Your trusted automotive partner since 1997.</p>
             </div>
             <div class="about-container">
                 <div class="about-image">
                     <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&q=80&w=800"
                         alt="About Us">
                     <div class="experience-badge">
-                        <span class="num">33+</span>
+                        <span class="num">40+</span>
                         <span class="text">Years<br>Experience</span>
                     </div>
                 </div>
