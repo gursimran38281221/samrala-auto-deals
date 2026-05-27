@@ -1698,3 +1698,44 @@ form {
     opacity: 1;
     transform: translateY(0);
 }
+
+/* Custom Interactive Star Rating Selector */
+.star-rating-selector {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 1.8rem;
+    color: #4a5568;
+    cursor: pointer;
+    align-items: center;
+    height: 48px;
+    user-select: none;
+}
+
+.star-rating-selector i {
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.15s ease;
+}
+
+.star-rating-selector i:hover {
+    transform: scale(1.3);
+}
+
+.star-rating-selector i.hovered,
+.star-rating-selector i.selected {
+    color: #ffd700;
+}
+
+.star-rating-selector i.selected {
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+    transform: scale(1.15);
+}
+
+/* Dynamic Initials Avatar styling */
+.avatar-gradient {
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 1.15rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
