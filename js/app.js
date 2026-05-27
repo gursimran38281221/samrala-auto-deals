@@ -7,6 +7,21 @@ const EMAILJS_SERVICE_ID = 'service_ik3ic6e';
 const EMAILJS_TEMPLATE_ID = 'template_lrv5iit';
 const EMAILJS_PUBLIC_KEY = 'C0ioeHHgS1p2Bil3L';
 
+const premiumGradients = [
+    'linear-gradient(135deg, #ff6b00, #ff8c00)', // Orange
+    'linear-gradient(135deg, #00d2ff, #0066ff)', // Blue
+    'linear-gradient(135deg, #b827fc, #2c90fc)', // Purple-Blue
+    'linear-gradient(135deg, #ff0f7b, #f53d2d)', // Pink-Red
+    'linear-gradient(135deg, #00b09b, #96c93d)', // Green
+    'linear-gradient(135deg, #fc4a1a, #f7b733)'  // Peach-Orange
+];
+
+const defaultTestimonials = [
+    { id: 1, name: 'Gurpreet Singh', stars: 5, text: 'Sold my old Pulsar here and got an amazing price. The paperwork was handled seamlessly within hours. Highly professional staff!', vehicle: 'Sold Bajaj Pulsar', avatar: 'GS', avatarBg: 'linear-gradient(135deg, #ff6b00, #ff8c00)' },
+    { id: 2, name: 'Manpreet Kaur', stars: 4.5, text: 'I bought an Activa 6G for my daily commute. It looked brand new and runs perfectly. The 6-month warranty gave me great peace of mind.', vehicle: 'Bought Honda Activa', avatar: 'MK', avatarBg: 'linear-gradient(135deg, #00d2ff, #0066ff)' },
+    { id: 3, name: 'Rajeev Sharma', stars: 5, text: 'The best dealership in Samrala hands down. They arranged my loan within 4 hours. Extremely transparent pricing.', vehicle: 'Bought Royal Enfield', avatar: 'RS', avatarBg: 'linear-gradient(135deg, #b827fc, #2c90fc)' }
+];
+
 // ============================================================
 // VEHICLE DATA
 // ============================================================
@@ -42,10 +57,56 @@ window.navigateTo = function(targetId) {
     window.scrollTo(0, 0);
 
     if (targetId === 'buy-section') window.fetchVehicles();
+    if (targetId === 'testimonials-section') window.renderTestimonials();
     if (targetId === 'admin-section') loadAdminStats();
 
     const navLinks = document.querySelector('.nav-links');
     if (navLinks) navLinks.classList.remove('nav-active');
+};
+
+window.getTestimonials = function() {
+    const stored = localStorage.getItem('testimonials');
+    if (stored) {
+        try { return JSON.parse(stored); } catch(e) { return defaultTestimonials; }
+    }
+    localStorage.setItem('testimonials', JSON.stringify(defaultTestimonials));
+    return defaultTestimonials;
+};
+
+window.renderTestimonials = function() {
+    const grid = document.getElementById('testimonials-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const testimonials = window.getTestimonials();
+    testimonials.forEach(t => {
+        const card = document.createElement('div');
+        card.className = 'testimonial-card';
+        
+        let starsHtml = '';
+        const fullStars = Math.floor(t.stars);
+        const hasHalf = t.stars % 1 !== 0;
+        for (let i = 0; i < 5; i++) {
+            if (i < fullStars) {
+                starsHtml += '<i class="fa-solid fa-star"></i>';
+            } else if (i === fullStars && hasHalf) {
+                starsHtml += '<i class="fa-solid fa-star-half-stroke"></i>';
+            } else {
+                starsHtml += '<i class="fa-regular fa-star"></i>';
+            }
+        }
+
+        card.innerHTML = `
+            <div class="stars">${starsHtml}</div>
+            <p>"${t.text}"</p>
+            <div class="author">
+                <div class="avatar avatar-gradient" style="background: ${t.avatarBg || 'var(--accent-primary)'};">${t.avatar}</div>
+                <div class="author-info">
+                    <h4>${t.name}</h4>
+                    <span>${t.vehicle || 'Verified Rider'}</span>
+                </div>
+            </div>`;
+        grid.appendChild(card);
+    });
 };
 
 window.getVehicles = function() {
@@ -419,8 +480,125 @@ document.addEventListener('DOMContentLoaded', function() {
         type1();
     }
 
+    // --- Interactive Review Star Selector ---
+    const starSelector = document.getElementById('star-selector');
+    if (starSelector) {
+        const stars = starSelector.querySelectorAll('i');
+        const ratingInput = document.getElementById('review-rating');
+
+        function updateStarsDisplay(value, stateClass) {
+            stars.forEach(star => {
+                const starVal = parseInt(star.getAttribute('data-rating'));
+                if (starVal <= value) {
+                    star.className = 'fa-solid fa-star ' + stateClass;
+                } else {
+                    if (stateClass === 'hovered') {
+                        const isSelected = star.classList.contains('selected');
+                        star.className = (isSelected ? 'fa-solid' : 'fa-regular') + ' fa-star' + (isSelected ? ' selected' : '');
+                    } else {
+                        star.className = 'fa-regular fa-star';
+                    }
+                }
+            });
+        }
+
+        updateStarsDisplay(5, 'selected');
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                const rating = parseInt(this.getAttribute('data-rating'));
+                updateStarsDisplay(rating, 'hovered');
+            });
+
+            star.addEventListener('click', function() {
+                const rating = parseInt(this.getAttribute('data-rating'));
+                ratingInput.value = rating;
+                updateStarsDisplay(rating, 'selected');
+            });
+        });
+
+        starSelector.addEventListener('mouseleave', function() {
+            const currentRating = parseInt(ratingInput.value) || 5;
+            stars.forEach(star => {
+                const starVal = parseInt(star.getAttribute('data-rating'));
+                if (starVal <= currentRating) {
+                    star.className = 'fa-solid fa-star selected';
+                } else {
+                    star.className = 'fa-regular fa-star';
+                }
+            });
+        });
+    }
+
+    // --- Review Form Submission ---
+    const reviewForm = document.getElementById('review-form');
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('review-name').value.trim();
+            const rating = parseInt(document.getElementById('review-rating').value) || 5;
+            const vehicle = document.getElementById('review-vehicle').value.trim();
+            const text = document.getElementById('review-text').value.trim();
+
+            if (!name || !text) {
+                showToast('Please fill out all required fields.');
+                return;
+            }
+
+            // Generate initials
+            const nameParts = name.split(' ');
+            let initials = '';
+            if (nameParts.length > 0 && nameParts[0]) {
+                initials += nameParts[0].charAt(0).toUpperCase();
+            }
+            if (nameParts.length > 1 && nameParts[1]) {
+                initials += nameParts[1].charAt(0).toUpperCase();
+            } else if (name.length > 1) {
+                initials += name.charAt(1).toUpperCase();
+            }
+            if (!initials) initials = 'U';
+
+            // Pick a random premium gradient
+            const avatarBg = premiumGradients[Math.floor(Math.random() * premiumGradients.length)];
+
+            // Create new testimonial object
+            const newTestimonial = {
+                id: Date.now(),
+                name: name,
+                stars: rating,
+                text: text,
+                vehicle: vehicle || 'Verified Rider',
+                avatar: initials,
+                avatarBg: avatarBg
+            };
+
+            // Save to localStorage
+            const testimonials = window.getTestimonials();
+            testimonials.push(newTestimonial);
+            localStorage.setItem('testimonials', JSON.stringify(testimonials));
+
+            // Success feedback
+            showToast('Thank you for your rating & review!');
+            reviewForm.reset();
+
+            // Reset star selector to default 5 stars
+            const ratingInput = document.getElementById('review-rating');
+            if (ratingInput) ratingInput.value = 5;
+            if (starSelector) {
+                const stars = starSelector.querySelectorAll('i');
+                stars.forEach(star => {
+                    star.className = 'fa-solid fa-star selected';
+                });
+            }
+
+            // Immediately re-render testimonials
+            window.renderTestimonials();
+        });
+    }
+
     // --- Initial page render ---
     renderFeaturedPetrol();
     window.fetchVehicles();
+    window.renderTestimonials();
     loadAdminStats();
 });
