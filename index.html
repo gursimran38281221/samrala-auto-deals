@@ -520,76 +520,234 @@
                 <!-- Sidebar -->
                 <aside class="sidebar">
                     <div class="sidebar-header">
-                        <i class="fa-solid fa-motorcycle"></i>
-                        <span>Samrala <strong>Admin</strong></span>
+                        <i class="fa-solid fa-robot"></i>
+                        <span>Samrala <strong>AI Center</strong></span>
                     </div>
                     <ul class="sidebar-nav">
-                        <li class="active"><a href="#"><i class="fa-solid fa-chart-pie"></i> Overview</a></li>
-                        <li><a href="#"><i class="fa-solid fa-boxes-stacked"></i> Inventory</a></li>
-                        <li><a href="#"><i class="fa-solid fa-envelope"></i> CRM Leads</a></li>
-                        <li><a href="#" onclick="navigateTo('home-section'); return false;"><i
-                                    class="fa-solid fa-arrow-up-right-from-square"></i> Live Site</a></li>
+                        <li class="active" id="tab-overview"><a href="#" onclick="switchDashboardTab('overview'); return false;"><i class="fa-solid fa-chart-pie"></i> Overview</a></li>
+                        <li id="tab-analytics"><a href="#" onclick="switchDashboardTab('analytics'); return false;"><i class="fa-solid fa-brain"></i> AI Analytics</a></li>
+                        <li id="tab-users"><a href="#" onclick="switchDashboardTab('users'); return false;"><i class="fa-solid fa-user-gear"></i> User Config</a></li>
+                        <li id="tab-activity"><a href="#" onclick="switchDashboardTab('activity'); return false;"><i class="fa-solid fa-terminal"></i> System Logs</a></li>
+                        <li><a href="#" onclick="navigateTo('home-section'); return false;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live Site</a></li>
                     </ul>
                 </aside>
 
                 <!-- Main Content -->
                 <main class="main-content">
+                    <!-- Top Search and Info Bar -->
                     <header class="top-nav">
                         <div class="greeting">
-                            <h2>Welcome back, Boss! 👋</h2>
-                            <p>Here is what's happening with your dealership today.</p>
+                            <h2>Samrala Operations Console</h2>
+                            <p>Manage inventory, track customer queries, and consult LLM business intelligence.</p>
                         </div>
-                        <div class="user-profile">
-                            <img src="https://ui-avatars.com/api/?name=Owner&background=ff6b00&color=fff"
-                                alt="Owner Avatar">
+                        <div class="top-nav-right">
+                            <div class="dash-search">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" placeholder="Search system events, inventory..." id="dash-search-input">
+                            </div>
+                            <div class="notification-panel" onclick="toggleNotifications()">
+                                <i class="fa-solid fa-bell"></i>
+                                <span class="notification-badge">3</span>
+                                <div class="notifications-dropdown" id="notif-dropdown">
+                                    <h4>System Alerts</h4>
+                                    <ul>
+                                        <li>
+                                            <span class="alert-dot active"></span>
+                                            <div class="alert-details">
+                                                <p>New request for Bullet Standard from Gurpreet Singh</p>
+                                                <span>2 mins ago</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="alert-dot active"></span>
+                                            <div class="alert-details">
+                                                <p>Llama-3.1 model initialized successfully</p>
+                                                <span>10 mins ago</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="alert-dot"></span>
+                                            <div class="alert-details">
+                                                <p>Weekly backup completed</p>
+                                                <span>1 hour ago</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="user-profile">
+                                <img src="https://ui-avatars.com/api/?name=Owner&background=ff6b00&color=fff" alt="Owner Avatar">
+                            </div>
                         </div>
                     </header>
 
-                    <!-- Stats Grid -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fa-solid fa-motorcycle"></i></div>
-                            <div class="stat-details">
-                                <h3 id="total-vehicles">0</h3>
-                                <p>Active Vehicles</p>
+                    <!-- TAB 1: OVERVIEW -->
+                    <div class="dash-view active-view" id="view-overview">
+                        <!-- Stats Grid -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fa-solid fa-motorcycle"></i></div>
+                                <div class="stat-details">
+                                    <h3 id="total-vehicles">0</h3>
+                                    <p>Active Vehicles</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                                <div class="stat-details">
+                                    <h3 id="total-value">₹0</h3>
+                                    <p>Total Inventory Value</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fa-solid fa-tags"></i></div>
+                                <div class="stat-details">
+                                    <h3 id="avg-price">₹0</h3>
+                                    <p>Avg. Asking Price</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
-                            <div class="stat-details">
-                                <h3 id="total-value">₹0</h3>
-                                <p>Total Inventory Value</p>
+
+                        <!-- AI Section -->
+                        <div class="ai-section">
+                            <div class="ai-header">
+                                <div class="ai-header-left">
+                                    <i class="fa-solid fa-robot"></i>
+                                    <h3>Llama 3 Business Operations AI</h3>
+                                </div>
+                                <div class="ai-status">
+                                    <span class="status-pulse"></span>
+                                    <span>ONLINE &amp; ACTIVE</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon"><i class="fa-solid fa-tags"></i></div>
-                            <div class="stat-details">
-                                <h3 id="avg-price">₹0</h3>
-                                <p>Avg. Asking Price</p>
+                            <div class="ai-chat-window" id="chat-window">
+                                <div class="chat-message assistant">
+                                    <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                                    <div class="bubble">Hello Boss! I'm your AI operations assistant. I have analyzed your
+                                        entire inventory database. How can I help you analyze your business today?</div>
+                                </div>
+                            </div>
+                            <div class="ai-input-area">
+                                <form id="chat-form">
+                                    <input type="text" id="chat-input"
+                                        placeholder="e.g. Which bikes should I put on discount to clear stock?" required
+                                        autocomplete="off">
+                                    <button type="submit" id="chat-submit"><i class="fa-solid fa-paper-plane"></i></button>
+                                </form>
                             </div>
                         </div>
                     </div>
 
-                    <!-- AI Section -->
-                    <div class="ai-section">
-                        <div class="ai-header">
-                            <i class="fa-solid fa-robot"></i>
-                            <h3>Llama 3 Business Operations AI</h3>
-                        </div>
-                        <div class="ai-chat-window" id="chat-window">
-                            <div class="chat-message assistant">
-                                <div class="avatar"><i class="fa-solid fa-robot"></i></div>
-                                <div class="bubble">Hello Boss! I'm your AI operations assistant. I have analyzed your
-                                    entire inventory database. How can I help you analyze your business today?</div>
+                    <!-- TAB 2: AI ANALYTICS -->
+                    <div class="dash-view" id="view-analytics" style="display: none;">
+                        <div class="analytics-row">
+                            <!-- Chart Card 1 -->
+                            <div class="chart-card">
+                                <h3>API Load Traffic (Requests/Hr)</h3>
+                                <div class="bar-chart">
+                                    <div class="bar-col"><div class="bar-fill" style="height: 40%;"></div><span>09:00</span></div>
+                                    <div class="bar-col"><div class="bar-fill" style="height: 65%;"></div><span>10:00</span></div>
+                                    <div class="bar-col"><div class="bar-fill" style="height: 85%;"></div><span>11:00</span></div>
+                                    <div class="bar-col"><div class="bar-fill highlight" style="height: 95%;"></div><span>12:00</span></div>
+                                    <div class="bar-col"><div class="bar-fill" style="height: 70%;"></div><span>13:00</span></div>
+                                    <div class="bar-col"><div class="bar-fill" style="height: 50%;"></div><span>14:00</span></div>
+                                </div>
+                            </div>
+                            <!-- Performance Widgets -->
+                            <div class="performance-metrics">
+                                <div class="metric-widget">
+                                    <div class="metric-header">
+                                        <span>Average Response Speed</span>
+                                        <strong>182 ms</strong>
+                                    </div>
+                                    <div class="metric-track"><div class="metric-progress" style="width: 88%; background: var(--accent-secondary);"></div></div>
+                                </div>
+                                <div class="metric-widget">
+                                    <div class="metric-header">
+                                        <span>Total Tokens Processed</span>
+                                        <strong>1.2M</strong>
+                                    </div>
+                                    <div class="metric-track"><div class="metric-progress" style="width: 65%; background: var(--accent-primary);"></div></div>
+                                </div>
+                                <div class="metric-widget">
+                                    <div class="metric-header">
+                                        <span>Model Efficiency Rating</span>
+                                        <strong>99.8%</strong>
+                                    </div>
+                                    <div class="metric-track"><div class="metric-progress" style="width: 99.8%; background: #00ff88;"></div></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="ai-input-area">
-                            <form id="chat-form">
-                                <input type="text" id="chat-input"
-                                    placeholder="e.g. Which bikes should I put on discount to clear stock?" required
-                                    autocomplete="off">
-                                <button type="submit" id="chat-submit"><i class="fa-solid fa-paper-plane"></i></button>
-                            </form>
+                    </div>
+
+                    <!-- TAB 3: USER CONFIG / ROSTER -->
+                    <div class="dash-view" id="view-users" style="display: none;">
+                        <div class="glass-table-wrapper">
+                            <table class="glass-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>System Access Role</th>
+                                        <th>Connection RTO Status</th>
+                                        <th>Permissions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="user-avatar-text">GS</div>
+                                                <div class="user-meta"><strong>Gursimran Singh</strong><span>gursimran38281221@gmail.com</span></div>
+                                            </div>
+                                        </td>
+                                        <td><span class="role-badge admin">Owner / Admin</span></td>
+                                        <td><span class="status-indicator online"></span> Active Online</td>
+                                        <td>Full Root Access</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="user-avatar-text">AK</div>
+                                                <div class="user-meta"><strong>Amit Kumar</strong><span>amit.samrala@gmail.com</span></div>
+                                            </div>
+                                        </td>
+                                        <td><span class="role-badge agent">Sales Agent</span></td>
+                                        <td><span class="status-indicator online"></span> Active Online</td>
+                                        <td>Inventory & Lead Write</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="user-avatar-text">MK</div>
+                                                <div class="user-meta"><strong>Manpreet Kaur</strong><span>manpreet@gmail.com</span></div>
+                                            </div>
+                                        </td>
+                                        <td><span class="role-badge guest">Guest Connection</span></td>
+                                        <td><span class="status-indicator offline"></span> Offline</td>
+                                        <td>Read Only</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: SYSTEM LOGS -->
+                    <div class="dash-view" id="view-activity" style="display: none;">
+                        <div class="terminal-container">
+                            <div class="terminal-header">
+                                <span class="term-dot red"></span>
+                                <span class="term-dot yellow"></span>
+                                <span class="term-dot green"></span>
+                                <span class="term-title">llama3-ops@samrala-ai-server:~</span>
+                            </div>
+                            <div class="terminal-body" id="system-logs-container">
+                                <div class="log-line"><span class="log-timestamp">[13:00:02]</span> SYSTEM: SAMRALA AUTO DEALS ENGINE INITIATED...</div>
+                                <div class="log-line"><span class="log-timestamp">[13:02:14]</span> LLM: Llama-3.1-8b model initialized successfully on server.</div>
+                                <div class="log-line"><span class="log-timestamp">[13:05:40]</span> CRM: Received lead inquiry from Gurpreet Singh (+91 7973850653).</div>
+                                <div class="log-line"><span class="log-timestamp">[13:10:12]</span> USER: Query routed successfully through local inventory interceptor.</div>
+                                <div class="log-line"><span class="log-timestamp">[13:18:50]</span> THEME: Switch triggered. Cached theme state saved in localStorage.</div>
+                                <div class="log-line"><span class="log-timestamp">[13:26:01]</span> SYSTEM: High-fidelity SaaS AI Center metrics operational.</div>
+                            </div>
                         </div>
                     </div>
                 </main>
@@ -709,6 +867,16 @@
 
     <!-- Toast Notification -->
     <div id="toast" class="toast">Action Successful!</div>
+
+    <!-- Floating Theme Selector -->
+    <div class="theme-selector-floating" id="theme-selector">
+        <button class="theme-btn active" id="theme-dark-btn" onclick="setTheme('dark')" title="High-End Dark Mode">
+            <i class="fa-solid fa-moon"></i> <span>Dark Mode</span>
+        </button>
+        <button class="theme-btn" id="theme-simple-btn" onclick="setTheme('simple')" title="Simple Light Mode">
+            <i class="fa-solid fa-sun"></i> <span>Simple Mode</span>
+        </button>
+    </div>
 
     <!-- Main Script -->
     <script src="js/app.js"></script>
