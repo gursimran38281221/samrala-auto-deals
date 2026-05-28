@@ -14,6 +14,12 @@
     --shadow-glow: 0 0 25px rgba(255, 107, 0, 0.25);
     --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     --transition-smooth: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    
+    /* Mapped variables to resolve undefined custom properties */
+    --primary-color: var(--accent-primary);
+    --text-light: var(--text-main);
+    --card-bg: var(--bg-card);
+    --transition: var(--transition-fast);
 }
 
 /* ===== Resets & Base Styles ===== */
@@ -2303,6 +2309,12 @@ html.simple-mode {
     --border-color: #e2e8f0; /* Simple gray borders */
     --shadow-subtle: 0 10px 25px rgba(0, 0, 0, 0.05);
     --shadow-glow: 0 0 15px rgba(255, 107, 0, 0.15);
+    
+    /* Mapped variables for simple mode */
+    --primary-color: var(--accent-primary);
+    --text-light: var(--text-main);
+    --card-bg: var(--bg-card);
+    --transition: var(--transition-fast);
 }
 
 html.simple-mode body {
@@ -2685,6 +2697,72 @@ html.simple-mode .footer-links a:hover {
 
 html.simple-mode .contact-list li {
     color: #475569 !important;
+}
+
+/* Specific Modal Overrides for Clean Simple Mode */
+html.simple-mode .modal-content {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+}
+
+html.simple-mode .modal-image-wrapper {
+    background: #f1f5f9 !important;
+    border-right: 1px solid #cbd5e1 !important;
+}
+
+html.simple-mode .modal-details {
+    background: #ffffff !important;
+}
+
+html.simple-mode .modal-details h2 {
+    color: #0f172a !important;
+}
+
+html.simple-mode .modal-details .year-tag {
+    background: rgba(255, 107, 0, 0.08) !important;
+    color: var(--accent-primary) !important;
+}
+
+html.simple-mode .spec-item {
+    border-bottom: 1px solid #cbd5e1 !important;
+}
+
+html.simple-mode .spec-label {
+    color: #475569 !important;
+}
+
+html.simple-mode .spec-value {
+    color: #0f172a !important;
+}
+
+html.simple-mode .price-box {
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+html.simple-mode .price-item {
+    border-bottom-color: #cbd5e1 !important;
+}
+
+html.simple-mode .price-label {
+    color: #475569 !important;
+}
+
+html.simple-mode .price-value {
+    color: #0f172a !important;
+}
+
+html.simple-mode .dealing-price {
+    color: #16a34a !important; /* Premium Accessible Green on white/gray */
+}
+
+html.simple-mode .close-modal {
+    color: #475569 !important;
+}
+
+html.simple-mode .close-modal:hover {
+    color: var(--accent-primary) !important;
 }
 
 /* ============================================================
@@ -3675,3 +3753,194 @@ html.simple-mode .log-timestamp {
 @media (max-width: 768px) {
     #sell-status-container {
         padding: 1rem;
+    }
+    .file-input-wrapper {
+        height: 100px;
+    }
+}
+
+/* 5. Contact Form Wrapper */
+@media (max-width: 992px) {
+    .contact-wrapper {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+}
+
+/* 6. Footer Layout Responsiveness */
+@media (max-width: 1024px) {
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+    .footer-bottom-container {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    .legal-links {
+        justify-content: center;
+        gap: 1.5rem;
+    }
+}
+
+/* 7. SaaS Admin Dashboard Responsiveness */
+@media (max-width: 900px) {
+    .analytics-row {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    .performance-metrics {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .top-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.2rem;
+    }
+    .top-nav-right {
+        width: 100%;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+    .dash-search {
+        width: 100%;
+        max-width: none;
+    }
+    .user-profile {
+        display: none; /* Hide profile photo on very narrow viewports to save space */
+    }
+}
+
+@media (max-width: 480px) {
+    .bar-chart {
+        height: 130px;
+    }
+    .bar-fill {
+        width: 18px;
+    }
+    .bar-col span {
+        font-size: 0.7rem;
+    }
+    .glass-table th, .glass-table td {
+        padding: 0.8rem 1rem;
+    }
+    .user-cell {
+        gap: 8px;
+    }
+    .user-meta strong {
+        font-size: 0.8rem;
+    }
+    .user-meta span {
+        font-size: 0.7rem;
+    }
+    .terminal-body {
+        height: 300px;
+        font-size: 0.75rem;
+    }
+}
+
+/* ===== Beautiful Soft Preloader ===== */
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #050608;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 1;
+    visibility: visible;
+}
+
+#preloader.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.preloader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: preloaderEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes preloaderEntrance {
+    0% { opacity: 0; transform: translateY(20px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.preloader-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-primary), #ff2a00);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    color: #fff;
+    box-shadow: 0 0 30px rgba(255, 107, 0, 0.35);
+    margin-bottom: 2rem;
+    animation: preloaderLogoPulse 2s infinite alternate;
+}
+
+@keyframes preloaderLogoPulse {
+    0% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 107, 0, 0.3); }
+    100% { transform: scale(1.05); box-shadow: 0 0 50px rgba(255, 107, 0, 0.5); }
+}
+
+.preloader-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.05);
+    border-top: 3px solid var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 1.5rem;
+}
+
+.preloader-brand {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+.preloader-brand strong {
+    color: var(--accent-primary);
+}
+
+.preloader-status {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Make Simple Mode preloader bright */
+html.simple-mode #preloader {
+    background: #f8fafc;
+}
+html.simple-mode .preloader-brand {
+    color: #0f172a;
+}
+html.simple-mode .preloader-status {
+    color: #475569;
+}
