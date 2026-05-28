@@ -128,8 +128,6 @@ window.getVehicles = function() {
 window.fetchVehicles = async function() {
     const grid = document.getElementById('vehicles-grid');
     if (!grid) return;
-    grid.innerHTML = '<div class="loader"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading inventory...</div>';
-    await new Promise(r => setTimeout(r, 400));
     const vehicles = window.getVehicles();
     window._allVehicles = vehicles;
     window.renderVehicles(vehicles);
@@ -577,8 +575,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const t1 = line1.textContent, t2 = line2.textContent;
         line1.textContent = ''; line2.textContent = '';
         let i = 0;
-        function type1() { if (i < t1.length) { line1.textContent += t1[i++]; setTimeout(type1, 20); } else { i = 0; setTimeout(type2, 400); } }
-        function type2() { if (i < t2.length) { line2.textContent += t2[i++]; setTimeout(type2, 20); } }
+        function type1() { if (i < t1.length) { line1.textContent += t1[i++]; setTimeout(type1, 10); } else { i = 0; setTimeout(type2, 300); } }
+        function type2() { if (i < t2.length) { line2.textContent += t2[i++]; setTimeout(type2, 10); } }
         type1();
     }
 
@@ -708,6 +706,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load saved theme preference
     const savedTheme = localStorage.getItem('selected-theme') || 'dark';
     window.setTheme(savedTheme);
+
+    // Dismiss Preloader smoothly once page loading routines are fully initialized
+    setTimeout(() => {
+        const preloader = document.getElementById('preloader');
+        if (preloader) {
+            preloader.classList.add('fade-out');
+        }
+    }, 250); // 250ms soft transition padding for cinematic look
 });
 
 // --- Theme Selector Logic ---
