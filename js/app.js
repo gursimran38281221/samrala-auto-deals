@@ -166,6 +166,7 @@ window.renderVehicles = function(vehicles) {
             </div>`;
         grid.appendChild(card);
     });
+    window.init3DTilt();
 };
 
 window.showVehicleDetails = function(id) {
@@ -205,6 +206,7 @@ window.showVehicleDetails = function(id) {
         </div>`;
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
+    window.init3DTilt();
 };
 
 window.closeModal = function() {
@@ -311,6 +313,7 @@ function renderFeaturedPetrol() {
             </div>`;
         grid.appendChild(card);
     });
+    window.init3DTilt();
 }
 
 function loadAdminStats() {
@@ -327,6 +330,38 @@ function loadAdminStats() {
         if (ap) ap.textContent = '₹' + avg.toLocaleString();
     } catch(e) { console.error('Admin stats error:', e); }
 }
+
+// Dynamic 3D Tilt and Parallax Effect for rotating 3D bike images
+window.init3DTilt = function() {
+    const targets = document.querySelectorAll('.card, .modal-image-wrapper');
+    targets.forEach(target => {
+        if (target.dataset.tiltBound) return;
+        target.dataset.tiltBound = 'true';
+
+        target.addEventListener('mousemove', e => {
+            const rect = target.getBoundingClientRect();
+            const x = e.clientX - rect.left; 
+            const y = e.clientY - rect.top;  
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            // Kinetic high-speed responses
+            const angleY = ((x - centerX) / centerX) * 15; 
+            const angleX = -((y - centerY) / centerY) * 15; 
+            
+            target.style.setProperty('--rx', `${angleX}deg`);
+            target.style.setProperty('--ry', `${angleY}deg`);
+            target.style.setProperty('--img-rot', `${angleY * 0.75}deg`);
+        });
+        
+        target.addEventListener('mouseleave', () => {
+            target.style.setProperty('--rx', '0deg');
+            target.style.setProperty('--ry', '0deg');
+            target.style.setProperty('--img-rot', '0deg');
+        });
+    });
+};
 
 // ============================================================
 // DOM READY
@@ -425,6 +460,73 @@ document.addEventListener('DOMContentLoaded', function() {
             chatInput.value = '';
             submitBtn.disabled = true;
             showTyping();
+
+            // Local Interceptor for Vehicle Details & Old Vehicle Details
+            const lowerMsg = msg.toLowerCase();
+            let isIntercepted = false;
+            let interceptReply = '';
+
+            // 1. Check for "old vehicle details" / "old vehical details" / "old vehicle" / "old vehical"
+            if (lowerMsg.includes('old vehical') || lowerMsg.includes('old vehicle')) {
+                isIntercepted = true;
+                interceptReply = `📋 <strong>recieve old vehical details</strong><br><br>` +
+                    `Here are the logs for recently sold pre-owned vehicles:<br>` +
+                    `<div style="margin-top: 10px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">` +
+                    `• <strong>Royal Enfield Bullet Standard</strong> (2018) - Sold for ₹95,000 (Owner: 1st)<br>` +
+                    `• <strong>Honda Activa 5G</strong> (2019) - Sold for ₹40,000 (Owner: 2nd)<br>` +
+                    `• <strong>Bajaj Pulsar 150</strong> (2018) - Sold for ₹55,000 (Owner: 1st)<br>` +
+                    `• <strong>Hero Splendor Plus</strong> (2021) - Sold for ₹52,000 (Owner: 1st)<br>` +
+                    `• <strong>TVS Jupiter 110</strong> (2020) - Sold for ₹48,000 (Owner: 1st)` +
+                    `</div><br>` +
+                    `Feel free to ask about today's active stock!`;
+            } 
+            // 2. Check for keywords relating to vehicle details (activa, bike, bullet, vehicle, vehical, scooter, or specific models)
+            else if (
+                lowerMsg.includes('activa') ||
+                lowerMsg.includes('bike') ||
+                lowerMsg.includes('bullet') ||
+                lowerMsg.includes('vehicle') ||
+                lowerMsg.includes('vehical') ||
+                lowerMsg.includes('scooter') ||
+                lowerMsg.includes('splendor') ||
+                lowerMsg.includes('hunter') ||
+                lowerMsg.includes('jupiter') ||
+                lowerMsg.includes('grazia') ||
+                lowerMsg.includes('iqube') ||
+                lowerMsg.includes('chetak') ||
+                lowerMsg.includes('ola')
+            ) {
+                isIntercepted = true;
+                const vehicles = window.getVehicles();
+                let listHtml = `🚗 <strong>Today's Vehicles on Road Details</strong><br><br>` +
+                    `Here is a live summary of our current two-wheeler stock on the road today:<br><br>`;
+                
+                vehicles.forEach((v, idx) => {
+                    const priceFormatted = v.price.toLocaleString();
+                    const dealPriceFormatted = (v.dealingPrice || Math.round(v.price * 0.9)).toLocaleString();
+                    const kmFormatted = v.kilometers.toLocaleString();
+                    listHtml += `<div style="margin-bottom: 12px; padding: 12px; background: rgba(255,107,0,0.05); border-radius: 8px; border: 1px solid rgba(255,107,0,0.15);">` +
+                        `<strong>${idx + 1}. ${v.brand} ${v.model}</strong> (${v.year})<br>` +
+                        `• Kilometers: ${kmFormatted} km | Owner: ${v.owner || '1st'}<br>` +
+                        `• Condition: ${v.condition || 'Excellent'}<br>` +
+                        `• Expecting Price: ₹${priceFormatted} | <span style="color: #00ff88;">Dealing Price: ₹${dealPriceFormatted}</span>` +
+                        `</div>`;
+                });
+                interceptReply = listHtml;
+            }
+
+            if (isIntercepted) {
+                setTimeout(() => {
+                    hideTyping();
+                    addMsg('assistant', interceptReply);
+                    history.push({ role: 'user', content: msg }, { role: 'assistant', content: interceptReply });
+                    if (history.length > 10) history = history.slice(-10);
+                    submitBtn.disabled = false;
+                    chatInput.focus();
+                }, 800);
+                return;
+            }
+
             try {
                 const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                     method: 'POST',
@@ -601,4 +703,134 @@ document.addEventListener('DOMContentLoaded', function() {
     window.fetchVehicles();
     window.renderTestimonials();
     loadAdminStats();
+    window.init3DTilt();
+
+    // Load saved theme preference
+    const savedTheme = localStorage.getItem('selected-theme') || 'dark';
+    window.setTheme(savedTheme);
+});
+
+// --- Theme Selector Logic ---
+window.setTheme = function(theme) {
+    const root = document.documentElement;
+    const darkBtn = document.getElementById('theme-dark-btn');
+    const simpleBtn = document.getElementById('theme-simple-btn');
+
+    if (theme === 'simple') {
+        root.classList.add('simple-mode');
+        localStorage.setItem('selected-theme', 'simple');
+        if (darkBtn) darkBtn.classList.remove('active');
+        if (simpleBtn) simpleBtn.classList.add('active');
+    } else {
+        root.classList.remove('simple-mode');
+        localStorage.setItem('selected-theme', 'dark');
+        if (darkBtn) darkBtn.classList.add('active');
+        if (simpleBtn) simpleBtn.classList.remove('active');
+    }
+};
+
+// --- SaaS AI Dashboard Interactive Controls ---
+window.switchDashboardTab = function(tabId) {
+    const tabs = ['overview', 'analytics', 'users', 'activity'];
+    tabs.forEach(t => {
+        const tabEl = document.getElementById(`tab-${t}`);
+        const viewEl = document.getElementById(`view-${t}`);
+        if (tabEl) tabEl.classList.remove('active');
+        if (viewEl) {
+            viewEl.style.display = 'none';
+            viewEl.classList.remove('active-view');
+        }
+    });
+
+    const activeTab = document.getElementById(`tab-${tabId}`);
+    const activeView = document.getElementById(`view-${tabId}`);
+    if (activeTab) activeTab.classList.add('active');
+    if (activeView) {
+        if (tabId === 'analytics') {
+            activeView.style.display = 'block';
+        } else if (tabId === 'overview') {
+            activeView.style.display = 'block';
+        } else {
+            activeView.style.display = 'block';
+        }
+        activeView.classList.add('active-view');
+    }
+};
+
+window.toggleNotifications = function(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    else if (window.event) window.event.cancelBubble = true;
+    
+    const dropdown = document.getElementById('notif-dropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('show');
+    }
+};
+
+// Close notification dropdown when clicking outside
+document.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('notif-dropdown');
+    const panel = document.querySelector('.notification-panel');
+    if (dropdown && dropdown.classList.contains('show') && panel && !panel.contains(e.target)) {
+        dropdown.classList.remove('show');
+    }
+});
+
+// Dynamic Operations System Logs simulation
+setInterval(() => {
+    const logsContainer = document.getElementById('system-logs-container');
+    if (logsContainer) {
+        const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+        const mockLogs = [
+            `CRM: Saved client query from Ludhiana database successfully.`,
+            `LLM: Temperature parameter adjusted to 0.7 for optimal business reasoning.`,
+            `SYSTEM: RTO status checker queried 4 active vehicles.`,
+            `CRM: Sent notification alert email to Owner.`,
+            `CRM: Query resolved in 142 ms. Cache hit: 100%`,
+            `THEME: Theme settings updated dynamically in local storage.`,
+            `DATABASE: Active inventory sync completed. 0 warnings.`,
+            `LLM: Llama Model reasoning initialized standard intercept response.`,
+            `AI ANALYTICS: API load usage spikes at 95% throughput.`
+        ];
+        const randomLog = mockLogs[Math.floor(Math.random() * mockLogs.length)];
+        const logLine = document.createElement('div');
+        logLine.className = 'log-line';
+        logLine.innerHTML = `<span class="log-timestamp">[${time}]</span> ${randomLog}`;
+        logsContainer.appendChild(logLine);
+        logsContainer.scrollTop = logsContainer.scrollHeight;
+        
+        while (logsContainer.children.length > 50) {
+            logsContainer.removeChild(logsContainer.firstChild);
+        }
+    }
+}, 4000);
+
+// Interactive search within dashboard events and users
+document.addEventListener('DOMContentLoaded', function() {
+    const dashSearch = document.getElementById('dash-search-input');
+    if (dashSearch) {
+        dashSearch.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            
+            // Filter logs in the terminal
+            const logs = document.querySelectorAll('#system-logs-container .log-line');
+            logs.forEach(log => {
+                if (log.textContent.toLowerCase().includes(query)) {
+                    log.style.display = 'block';
+                } else {
+                    log.style.display = 'none';
+                }
+            });
+            
+            // Filter user roster
+            const users = document.querySelectorAll('.glass-table tbody tr');
+            users.forEach(user => {
+                if (user.textContent.toLowerCase().includes(query)) {
+                    user.style.display = '';
+                } else {
+                    user.style.display = 'none';
+                }
+            });
+        });
+    }
 });
