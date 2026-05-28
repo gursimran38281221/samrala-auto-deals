@@ -188,7 +188,7 @@ window.showVehicleDetails = function(id) {
                     <li class="spec-item"><span class="spec-label">KM Driven</span><span class="spec-value">${vehicle.kilometers.toLocaleString()} km</span></li>
                 </ul>
                 <div class="price-box">
-                    <div class="price-item" style="margin-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:1rem;">
+                    <div class="price-item" style="margin-bottom:1rem;border-bottom:1px solid var(--border-color);padding-bottom:1rem;">
                         <span class="price-label">Expecting Price</span>
                         <span class="price-value">₹${vehicle.price.toLocaleString()}</span>
                     </div>
